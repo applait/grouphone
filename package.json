@@ -1,0 +1,26 @@
+{
+  "name": "grouphone-api",
+  "version": "0.0.1",
+  "description": "API and signaling layer for Grouphone",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/applait/grouphone-api.git"
+  },
+  "keywords": [
+    "grouphone",
+    "webrtc",
+    "audio",
+    "signaling"
+  ],
+  "author": "Applait Technologies LLP",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/applait/grouphone-api/issues"
+  },
+  "homepage": "https://github.com/applait/grouphone-api#readme"
+}
