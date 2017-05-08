@@ -4,6 +4,7 @@
   "description": "API and signaling layer for Grouphone",
   "main": "src/server.js",
   "scripts": {
+    "start": "node src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "private": true,
@@ -22,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/applait/grouphone-api/issues"
   },
-  "homepage": "https://github.com/applait/grouphone-api#readme"
+  "homepage": "https://github.com/applait/grouphone-api#readme",
+  "dependencies": {
+    "socket.io": "^1.7.4"
+  }
 }
