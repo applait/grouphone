@@ -7,7 +7,7 @@ let session_handler = require('./session_handler');
 
 const PORT = process.env.NODE_PORT || 8081;
 
-let server = new SocketIO(PORT, {
+let io = new SocketIO(PORT, {
     serveClient: false,
     pingTimeout: 15000,
     pingInterval: 5000,
@@ -16,8 +16,8 @@ let server = new SocketIO(PORT, {
     console.log(`Socket server running on port ${PORT}`);
 });
 
-server.on('connection', socket => {
+io.on('connection', socket => {
 
-    session_handler(socket);
+    session_handler(socket, io);
 
 });

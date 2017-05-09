@@ -9,7 +9,12 @@ let create_slug = () => {
     return [id.slice(0, 3), id.slice(3, 7), id.slice(7)].join('-');
 };
 
-function session_handler (socket) {
+function session_handler (socket, io) {
+
+    let session_connection_count = session_id => {
+        let room = io.sockets.adapter.rooms[session_id];
+        return room ? room.length : 0;
+    }
 
     socket.on('session:create', (p2p=true, ack) => {
         const id = create_slug();
@@ -17,11 +22,21 @@ function session_handler (socket) {
         ack({ session_id: id, p2p: p2p });
     });
 
+    socket.on('session:connection_count', (session_id, ack) => {
+        let conn_count = session_id ? session_connection_count(session_id) : 0;
+        ack({ session_id: session_id, connection_count: conn_count });
+    });
+
     socket.on('session:connect', (session_id, p2p, ack) => {
         socket.join(session_id, () => {
-            socket.emit('session:connected', { session_id: session_id, p2p: p2p });
-            socket.broadcast.to(session_id).emit('user:connected', { session_id: session_id, p2p: p2p });
-            ack({ session_id: session_id });
+            let send_data = {
+                session_id: session_id,
+                p2p: p2p,
+                connection_count: session_connection_count(session_id)
+            };
+            socket.emit('session:connected', send_data);
+            socket.broadcast.to(session_id).emit('user:connected', send_data);
+            ack({ session_id: session_id, connection_count: session_connection_count(session_id) });
         });
     });
 
