@@ -1,11 +1,13 @@
 {
   "name": "grouphone-api",
-  "version": "0.0.1",
+  "version": "0.0.1-dev",
   "description": "API and signaling layer for Grouphone",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint .",
+    "format": "eslint --fix .",
+    "test": "npm run lint"
   },
   "private": true,
   "repository": {
@@ -19,12 +21,20 @@
     "signaling"
   ],
   "author": "Applait Technologies LLP",
-  "license": "Apache-2.0",
+  "license": "LicenseRef-LICENSE",
   "bugs": {
     "url": "https://github.com/applait/grouphone-api/issues"
   },
   "homepage": "https://github.com/applait/grouphone-api#readme",
   "dependencies": {
     "socket.io": "^1.7.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.4.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
   }
 }
