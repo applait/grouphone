@@ -1,16 +1,16 @@
 const WebSocket = require('ws')
 
-function bootstrap (wss, mediaServer) {
+function bootstrap (wss, callManager) {
   wss.on('connection', (ws) => {
     // Do more here
   })
 }
 
-function createWSServer (httpServer, mediaServer) {
+function createWSServer (httpServer, callManager) {
   let wss = new WebSocket.Server({
     server: httpServer
   })
-  bootstrap(wss, mediaServer)
+  bootstrap(wss, callManager)
 }
 
 module.exports = createWSServer

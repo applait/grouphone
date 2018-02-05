@@ -9,6 +9,10 @@ const http = require('http')
 
 const mediaServer = require('./mediaServer')
 const wsServer = require('./wsServer')
+const CallManager = require('./callManager')
+
+// Create an instance of CallManager that we pass around to websockets and HTTP routes
+const manager = new CallManager(mediaServer)
 
 /**
  * Instantiate ExpressJS instance
@@ -23,7 +27,7 @@ app.set('port', port)
 app.use(bodyParser.json())
 
 // Mount HTTP API routes
-app.use('/', require('./routes')(mediaServer))
+app.use('/', require('./routes')(manager))
 
 /**
  * Create HTTP server.
@@ -31,7 +35,7 @@ app.use('/', require('./routes')(mediaServer))
 const server = http.createServer(app)
 
 // Mount websocket server
-wsServer(server, mediaServer)
+wsServer(server, manager)
 
 // Launch HTTP server
 server.listen(port)
