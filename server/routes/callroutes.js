@@ -38,7 +38,31 @@ function routesCall (callManager) {
       })
       return
     }
-    responses.error(res, 'Invalid connection ID',  { connectionId: req.params.connectionId }, 400)
+    responses.error(res, 'Invalid connection ID', { connectionId: req.params.connectionId }, 400)
+  })
+
+  // Receive a mediasoup protocol message from a specific connection
+  router.post('/:callId/message/:connectionId', callExists, (req, res, next) => {
+    const message = req.body.message
+    if (!message) {
+      const err = new Error('Need to specify `message` in request body')
+      err.status = 400
+      return next(err)
+    }
+    const currentcall = callManager.getCall(req.params.callId)
+    if (!currentcall.connections.has(req.params.connectionId)) {
+      const err = new Error('Invalid connection ID')
+      err.status = 400
+      return next(err)
+    }
+    currentcall.mediaMessage(message, req.params.connectionId)
+      .then(msg => {
+        responses.success(res, 'Message received', msg)
+      })
+      .catch(err => {
+        err.status = 500
+        next(err)
+      })
   })
 
   // Call information
