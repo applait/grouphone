@@ -22,6 +22,22 @@ class Connection {
   disconnect () {
     // TODO
   }
+
+  /**
+   * Sends mediasoup protocol message to the underlying Peer instance
+   *
+   * @param {Object} msg - A mediasoup protocol message object for the underlying Peer
+   * @return {Promise} - Returns the mediasoup request/notification result
+   */
+  peerMessage (msg) {
+    if (!this.mediaPeer) {
+      return Promise.reject(new Error('Peer not ready'))
+    }
+    if (msg.notification) {
+      return this.mediaPeer.receiveNotification(msg)
+    }
+    return this.mediaPeer.receiveRequest(msg)
+  }
 }
 
 module.exports = Connection

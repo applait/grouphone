@@ -80,16 +80,6 @@ class Call extends EventEmitter {
   }
 
   /**
-   * Handle mediasoup protocol request
-   *
-   * @param {Object} - Mediasoup protocol request sent by client
-   * @returns {Promise} - Promise that resolves to mediasoup protocol response that needs to be sent back to client
-   */
-  handleRequest (request) {
-    return this.mediaRoom.receiveRequest(request)
-  }
-
-  /**
    * Create a new connection instance for the room
    *
    * @param {string|null} [peerName=null] - an optional name for the peer of the connection
@@ -132,6 +122,43 @@ class Call extends EventEmitter {
 
       this.connections.delete(connectionId)
     }
+  }
+
+  /**
+   * Accept a mediasoup request for a specific peer
+   *
+   * @param {Object} msg - Mediasoup protocol request for the underlying peer.
+   * @param {string} connectionId - ID of the connection to dispatch request to.
+   * @returns {Promise} A promise returned by the mediasoup peer that contains response, if any
+   */
+  connectionMessage (msg, connectionId) {
+    if (!this.connections.has(connectionId)) {
+      return Promise.reject(new Error('Invalid connection ID'))
+    }
+    const c = this.connections.get(connectionId)
+    return c.peerMessage(msg)
+  }
+
+  /**
+   * Handle mediasoup protocol messages sent by clients to this call.
+   *
+   * @param {Object} msg - A mediasoup protocol message. Can be a request or notification, for room or peer.
+   * @param {string|null} [connectionId=null] - Connection ID of the peer if the message is to be delivered to a peer.
+   * @return {Promise}
+   */
+  mediaMessage (msg, connectionId = null) {
+    const invalidMsg = Promise.reject(new Error('Invalid mediasoup protocol message'))
+    if (!msg) {
+      return invalidMsg
+    }
+    // If message is for the room, send it to the room
+    if (msg.target && msg.target === 'room') {
+      return this.mediaRoom.receiveRequest(msg)
+    }
+    if (msg.target && msg.target === 'peer') {
+      return this.connectionMessage(msg, connectionId)
+    }
+    return invalidMsg
   }
 }
 
