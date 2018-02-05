@@ -4,7 +4,7 @@
 
 const express = require('express')
 const bodyParser = require('body-parser')
-const debug = require('util').debuglog('app')
+const debug = require('util').debuglog('server')
 const http = require('http')
 
 const mediaServer = require('./mediaServer')
