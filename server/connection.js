@@ -17,10 +17,22 @@ class Connection {
   }
 
   /**
+   * Getter to determine if this connection is currently active
+   */
+  get active () {
+    if (this.mediaPeer == null) {
+      return false
+    }
+    return !this.mediaPeer.closed
+  }
+
+  /**
    * Disconnects this connection
    */
   disconnect () {
-    // TODO
+    if (this.mediaPeer) {
+      this.mediaPeer.close()
+    }
   }
 
   /**

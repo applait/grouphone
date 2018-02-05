@@ -50,6 +50,25 @@ class Call extends EventEmitter {
   }
 
   /**
+   * Get number of current active connections
+   */
+  get connectionCount () {
+    return this.connections.size
+  }
+
+  get activeConnections () {
+    return Array.from(this.connections.values()).filter(c => c.active)
+  }
+
+  get connectionStatus () {
+    return Array.from(this.connections.values()).map(c => ({
+      connectionId: c.connectionId,
+      active: c.active,
+      name: c.name
+    }))
+  }
+
+  /**
    * Tells if the room is closed now
    */
   get closed () {
@@ -105,6 +124,8 @@ class Call extends EventEmitter {
    * Disconnect an existing connection in the room
    *
    * @param {string} connectionId - The connection ID of the `Connection` to disconnect
+   * @return {boolean} - Set to `true` if connection was successfully deleted. Else, is `false` if connection was
+   * invalid or could not be deleted.
    * @fires Call#connectionDestroyed
    */
   disconnect (connectionId) {
@@ -120,8 +141,9 @@ class Call extends EventEmitter {
        */
       this.emit('connectionDestroyed', c)
 
-      this.connections.delete(connectionId)
+      return this.connections.delete(connectionId)
     }
+    return false
   }
 
   /**

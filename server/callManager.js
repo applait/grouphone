@@ -59,6 +59,16 @@ class CallManager {
     }
     return this.calls.get(callId)
   }
+
+  /**
+   * Checks whether a given call ID is present
+   *
+   * @param {string} callId - The call ID to verify
+   * @returns {boolean} `true` if the call exists
+   */
+  has (callId) {
+    return this.calls.has(callId)
+  }
 }
 
 module.exports = CallManager
