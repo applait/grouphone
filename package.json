@@ -1,10 +1,9 @@
 {
-  "name": "grouphone-api",
-  "version": "0.0.1-dev",
-  "description": "API and signaling layer for Grouphone",
-  "main": "src/server.js",
+  "name": "grouphone",
+  "version": "0.0.0",
+  "description": "Distraction free group audio calls over WebRTC",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node server",
     "lint": "eslint .",
     "format": "eslint --fix .",
     "test": "npm run lint"
@@ -12,29 +11,34 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/applait/grouphone-api.git"
+    "url": "git+https://github.com/applait/grouphone.git"
   },
   "keywords": [
     "grouphone",
     "webrtc",
     "audio",
-    "signaling"
+    "signaling",
+    "multiparty",
+    "api"
   ],
   "author": "Applait Technologies LLP",
   "license": "LicenseRef-LICENSE",
   "bugs": {
-    "url": "https://github.com/applait/grouphone-api/issues"
+    "url": "https://github.com/applait/grouphone/issues"
   },
-  "homepage": "https://github.com/applait/grouphone-api#readme",
+  "homepage": "https://github.com/applait/grouphone#readme",
   "dependencies": {
-    "socket.io": "^1.7.4"
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "mediasoup": "^2.0.12",
+    "ws": "^4.0.0"
   },
   "devDependencies": {
-    "eslint": "^4.4.1",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-node": "^5.1.1",
-    "eslint-plugin-promise": "^3.5.0",
+    "eslint": "^4.17.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1"
   }
 }
