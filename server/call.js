@@ -47,6 +47,9 @@ class Call extends EventEmitter {
      * Stores map of `Connection` objects keyed by `Connection.connectionId`
      */
     this.connections = new Map()
+
+    // Setup the mediaRoom
+    this._setupMediaRoom()
   }
 
   /**
@@ -73,6 +76,16 @@ class Call extends EventEmitter {
    */
   get closed () {
     return this.mediaRoom && this.mediaRoom.closed
+  }
+
+  /**
+   * Returns true if given connection ID is present
+   *
+   * @param {string} connectionId - The connection ID
+   * @returns {boolean} Returns true if the connection exists
+   */
+  hasConnection (connectionId) {
+    return this.connections.has(connectionId)
   }
 
   /**
@@ -147,6 +160,26 @@ class Call extends EventEmitter {
   }
 
   /**
+   * Set WebSocket for a given connection ID. This is set when a client for a specific connection ID connects over
+   * WebSockets.
+   *
+   * @param {ws.WebSocket} ws - A WebSocket instance
+   * @param {string} connectionId - The ID of connection where the Websocket instance should be added
+   * @returns {boolean} Returns true if the connection was found and the websocket instance for the connection was updated.
+   */
+  setConnectionWebSocket (ws, connectionId) {
+    if (!this.connections.has(connectionId)) {
+      return false
+    }
+    const c = this.connections.get(connectionId)
+    if (c.ws !== null) {
+      return false
+    }
+    c.ws = ws
+    return true
+  }
+
+  /**
    * Accept a mediasoup request for a specific peer
    *
    * @param {Object} msg - Mediasoup protocol request for the underlying peer.
@@ -158,7 +191,7 @@ class Call extends EventEmitter {
       return Promise.reject(new Error('Invalid connection ID'))
     }
     const c = this.connections.get(connectionId)
-    return c.peerMessage(msg)
+    return c.recvPeerMessage(msg)
   }
 
   /**
@@ -181,6 +214,17 @@ class Call extends EventEmitter {
       return this.connectionMessage(msg, connectionId)
     }
     return invalidMsg
+  }
+
+  /**
+   * Setup media room
+   *
+   * @private
+   */
+  _setupMediaRoom () {
+    this.mediaRoom.on('newPeer', (peer) => {
+      console.log('New peer', peer.name, peer.appData)
+    })
   }
 }
 
