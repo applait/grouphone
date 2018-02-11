@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Grouphone</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" rel="stylesheet">
+  <script src="vendor/mediasoup-client.js"></script>
+  <script src="vendor/axios.min.js"></script>
+  <script src="grouphone.js"></script>
+</head>
+<body>
+  <div class="section">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-4">
+          <input class="input" id="apiBase" type="text" name="apiBase" placeholder="localhost:8081/">
+          <input class="input" id="callIdInput" type="text" name="callId" maxlength="7" placeholder="Call ID"
+            autocomplete="disabled">
+          <input class="input" id="callerNameInput" type="text" name="callerName" placeholder="Name">
+          <button class="button" id="joinCall">Join call</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-4">
+          <div id="localPeer"></div>
+        </div>
+        <div class="column">
+          <div id="remotePeers"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
