@@ -28,6 +28,12 @@ class CallManager {
    */
   createCall () {
     const c = new Call(this.mediaServer)
+    c.on('connectionCreated', (conn) => {
+      console.log(`Connection Created. Call: ${c.callId}. Connection: ${conn.connectionId}`)
+    })
+    c.on('connectionDestroyed', (conn) => {
+      console.log(`Connection Destroyed. Call: ${c.callId}. Connection: ${conn.connectionId}`)
+    })
     this.calls.set(c.callId, c)
     return c
   }
