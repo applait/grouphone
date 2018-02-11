@@ -29,12 +29,28 @@ function createWSServer (httpServer, callManager) {
     path: '/notifications'
   })
 
+  function noop () {}
+
+  function heartbeat () {
+    console.log('Pong')
+    this.isAlive = true
+  }
+
   wss.on('connection', (ws, req) => {
+    ws.isAlive = true
+    ws.on('pong', heartbeat)
     var ok = req.call.setConnectionWebSocket(ws, req.connectionId)
     if (!ok) {
       ws.terminate()
+      return
     }
-    ws.send(JSON.stringify({ msg: 'Hello' }))
+    setInterval(function ping () {
+      if (ws.isAlive === false) {
+        return ws.terminate()
+      }
+      ws.isAlive = false
+      ws.ping(noop)
+    }, 30000)
   })
 }
 
