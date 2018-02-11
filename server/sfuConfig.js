@@ -3,7 +3,7 @@
  */
 
 let config = {
-  loglevel: 'warn',
+  loglevel: 'debug',
   logTags: [
     'info',
     'ice',

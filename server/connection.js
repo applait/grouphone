@@ -1,3 +1,4 @@
+const { EventEmitter } = require('events')
 const { randomBytes } = require('crypto')
 
 /**
@@ -9,8 +10,9 @@ const { randomBytes } = require('crypto')
  * - dispatch communication to and from the `Peer`
  * - expose methods to control transports and capabilities of the underlying peer
  */
-class Connection {
+class Connection extends EventEmitter {
   constructor (name) {
+    super()
     this.connectionId = Date.now() + randomBytes(3).toString('hex')
     this.name = name
     this.mediaPeer = null
@@ -28,16 +30,29 @@ class Connection {
   }
 
   setMediaPeer (mediaPeer) {
+    console.log(`Setting media peer for connection: ${this.connectionId}`)
     this.mediaPeer = mediaPeer
-    this.mediaPeer.on('notify', (msg) => {
-      this.sendPeerMessage(msg)
-    })
+    this.mediaPeer.on('notify', this.sendPeerMessage.bind(this))
+  }
+
+  setSocket (ws) {
+    this.ws = ws
+    this.ws.onopen = () => {
+      console.log('Socket is open')
+    }
+    this.ws.onclose = () => {
+      this.disconnect()
+    }
+    this.ws.onerror = () => {
+      this.disconnect()
+    }
   }
 
   /**
    * Disconnects this connection
    */
   disconnect () {
+    this.emit('disconnect')
     if (this.mediaPeer) {
       this.mediaPeer.close()
     }
@@ -54,7 +69,9 @@ class Connection {
       return Promise.reject(new Error('Peer not ready'))
     }
     if (msg.notification) {
-      return this.mediaPeer.receiveNotification(msg)
+      return this.mediaPeer.receiveNotification(msg).then(n => {
+        return null
+      })
     }
     return this.mediaPeer.receiveRequest(msg)
   }
@@ -65,11 +82,11 @@ class Connection {
    * @param {Object} msg
    */
   sendPeerMessage (msg) {
-    if (this.ws !== null) {
-      this.ws.send({
+    if (this.ws != null) {
+      this.ws.send(JSON.stringify({
         type: 'mediasoupMessage',
         data: msg
-      })
+      }))
     }
   }
 }

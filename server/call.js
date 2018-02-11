@@ -120,6 +120,9 @@ class Call extends EventEmitter {
    */
   connect (peerName = null) {
     const c = new Connection(peerName)
+    c.on('disconnect', () => {
+      this._connectionDestroyed(c)
+    })
 
     /**
      * Fired when a new `Connection` is created in the call
@@ -130,6 +133,7 @@ class Call extends EventEmitter {
     this.emit('connectionCreated', c)
 
     this.connections.set(c.connectionId, c)
+
     return c.connectionId
   }
 
@@ -145,18 +149,21 @@ class Call extends EventEmitter {
     if (this.connections.has(connectionId)) {
       const c = this.connections.get(connectionId)
       c.disconnect()
-
-      /**
-       * Denotes a connection is destroyed
-       *
-       * @event Call#connectionDestroyed
-       * @param {Connection} c - The connection that was destroyed
-       */
-      this.emit('connectionDestroyed', c)
-
-      return this.connections.delete(connectionId)
+      return this._connectionDestroyed(c)
     }
     return false
+  }
+
+  _connectionDestroyed (c) {
+    /**
+     * Denotes a connection is destroyed
+     *
+     * @event Call#connectionDestroyed
+     * @param {Connection} c - The connection that was destroyed
+     */
+    this.emit('connectionDestroyed', c)
+
+    return this.connections.delete(c.connectionId)
   }
 
   /**
@@ -175,7 +182,7 @@ class Call extends EventEmitter {
     if (c.ws !== null) {
       return false
     }
-    c.ws = ws
+    c.setSocket(ws)
     return true
   }
 
