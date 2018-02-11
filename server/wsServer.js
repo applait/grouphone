@@ -25,7 +25,8 @@ function createWSServer (httpServer, callManager) {
 
   let wss = new WebSocket.Server({
     verifyClient: verifyClient,
-    server: httpServer
+    server: httpServer,
+    path: '/notifications'
   })
 
   wss.on('connection', (ws, req) => {

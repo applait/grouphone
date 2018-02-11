@@ -118,7 +118,8 @@ window.addEventListener('load', function () {
   }
 
   function setupConnection (conn) {
-    ws = new WebSocket(`ws://${API_BASE}?callId=${conn.callId}&connectionId=${conn.connectionId}`)
+    var wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    ws = new WebSocket(`${wsProtocol}//${API_BASE}notifications?callId=${conn.callId}&connectionId=${conn.connectionId}`)
     ws.onopen = function () {
       console.log('Opened Websocket connection')
       setupRoom(conn)
