@@ -14,7 +14,7 @@ window.addEventListener('load', function () {
   var remotePeers = document.getElementById('remotePeers')
 
   function apiUrl (...segments) {
-    return `http://${API_BASE}${segments.join('/')}`
+    return `${window.location.protocol}//${API_BASE}${segments.join('/')}`
   }
 
   function handleWebSocketMessage (data) {
