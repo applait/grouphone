@@ -124,7 +124,8 @@ window.addEventListener('load', function () {
 
   function setupConnection (conn) {
     var wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    ws = new WebSocket(`${wsProtocol}//${API_BASE}notifications?callId=${conn.callId}&connectionId=${conn.connectionId}`)
+    var wsBase = API_BASE.indexOf('/') === 0 ? `${window.location.hostname}/` : API_BASE
+    ws = new WebSocket(`${wsProtocol}//${wsBase}notifications?callId=${conn.callId}&connectionId=${conn.connectionId}`)
     ws.onopen = function () {
       console.log('Opened Websocket connection')
       setupRoom(conn)
