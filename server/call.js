@@ -209,9 +209,9 @@ class Call extends EventEmitter {
    * @return {Promise}
    */
   mediaMessage (msg, connectionId = null) {
-    const invalidMsg = Promise.reject(new Error('Invalid mediasoup protocol message'))
+    const invalidMsg = new Error('Invalid mediasoup protocol message')
     if (!msg) {
-      return invalidMsg
+      return Promise.reject(invalidMsg)
     }
     // If message is for the room, send it to the room
     if (msg.target && msg.target === 'room') {
@@ -220,7 +220,7 @@ class Call extends EventEmitter {
     if (msg.target && msg.target === 'peer') {
       return this.connectionMessage(msg, connectionId)
     }
-    return invalidMsg
+    return Promise.reject(invalidMsg)
   }
 
   /**
