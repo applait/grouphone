@@ -3,7 +3,6 @@
 window.addEventListener('load', function () {
   'use strict'
 
-  var callId
   var callerName
   var ws
   var room
@@ -11,10 +10,16 @@ window.addEventListener('load', function () {
   var transportSend
   var transportRecv
   var API_BASE
+  var callId = window.location.hash ? window.location.hash.substr(1) : null
   var remotePeers = document.getElementById('remotePeers')
 
+  if (callId) {
+    document.getElementById('callIdInput').value = callId
+  }
+
   function apiUrl (...segments) {
-    return `${window.location.protocol}//${API_BASE}${segments.join('/')}`
+    var _base = API_BASE.indexOf('/') === 0 ? API_BASE : `${window.location.protocol}//${API_BASE}`
+    return `${_base}${segments.join('/')}`
   }
 
   function handleWebSocketMessage (data) {
@@ -151,6 +156,7 @@ window.addEventListener('load', function () {
     axios.post(apiUrl('call', callId, 'connect'), { name: callerName })
       .then(function (res) {
         console.log('Connection information', res.data.payload)
+        window.location.hash = callId
         setupConnection(res.data.payload)
       })
       .catch(function (err) {
