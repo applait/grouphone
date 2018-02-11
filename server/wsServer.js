@@ -33,6 +33,7 @@ function createWSServer (httpServer, callManager) {
     if (!ok) {
       ws.terminate()
     }
+    ws.send(JSON.stringify({ msg: 'Hello' }))
   })
 }
 

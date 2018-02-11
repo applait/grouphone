@@ -222,7 +222,11 @@ class Call extends EventEmitter {
    * @private
    */
   _setupMediaRoom () {
-    this.mediaRoom.on('newPeer', (peer) => {
+    this.mediaRoom.on('newpeer', (peer) => {
+      const c = this.connections.get(peer.name)
+      if (c) {
+        c.setMediaPeer(peer)
+      }
       console.log('New peer', peer.name, peer.appData)
     })
   }
