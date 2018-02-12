@@ -32,7 +32,6 @@ function createWSServer (httpServer, callManager) {
   function noop () {}
 
   function heartbeat () {
-    console.log('Pong')
     this.isAlive = true
   }
 
