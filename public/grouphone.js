@@ -10,12 +10,8 @@ window.addEventListener('load', function () {
   var transportSend
   var transportRecv
   var API_BASE
-  var callId = window.location.hash ? window.location.hash.substr(1) : null
+  var callId
   var remotePeers = document.getElementById('remotePeers')
-
-  if (callId) {
-    document.getElementById('callIdInput').value = callId
-  }
 
   function apiUrl (...segments) {
     var _base = API_BASE.indexOf('/') === 0 ? API_BASE : `${window.location.protocol}//${API_BASE}`
@@ -27,6 +23,18 @@ window.addEventListener('load', function () {
     console.log('Websocket request received', data)
     if (data.type && data.type === 'mediasoupMessage') {
       room.receiveNotification(data.data)
+    }
+  }
+
+  function setCallId (id) {
+    callId = window.location.hash = document.getElementById('callIdInput').value = id
+    document.getElementById('joinCall').focus()
+  }
+
+  function setAPIBase () {
+    API_BASE = document.getElementById('apiBase').value || '/'
+    if (!/\/$/.test(API_BASE)) {
+      API_BASE = API_BASE + '/'
     }
   }
 
@@ -147,10 +155,7 @@ window.addEventListener('load', function () {
 
     callId = document.getElementById('callIdInput').value
     callerName = document.getElementById('callerNameInput').value
-    API_BASE = document.getElementById('apiBase').value || '/'
-    if (!/\/$/.test(API_BASE)) {
-      API_BASE = API_BASE + '/'
-    }
+    setAPIBase()
     console.log('Call ID', callId)
     console.log('Caller Name', callerName)
     console.log(apiUrl('call', callId, 'connect'))
@@ -162,8 +167,32 @@ window.addEventListener('load', function () {
       })
       .catch(function (err) {
         console.log('Error getting connection', err)
+        e.target.removeAttribute('disabled')
       })
   }
 
+  function createCall (e) {
+    e.preventDefault()
+    setAPIBase()
+    if (!callId) {
+      e.target.setAttribute('disabled', 'disabled')
+      axios.post(apiUrl('call'))
+        .then(function (res) {
+          console.log('Call Created', res.data)
+          setCallId(res.data.payload.callId)
+        })
+        .catch(function (err) {
+          console.log('Error creating call', err)
+          e.target.removeAttribute('disabled')
+        })
+    }
+  }
+
   document.getElementById('joinCall').addEventListener('click', joinCall)
+  document.getElementById('createCall').addEventListener('click', createCall)
+
+  if (window.location.hash) {
+    setCallId(window.location.hash.substr(1))
+    document.getElementById('createCall').setAttribute('disabled', 'disabled')
+  }
 })
